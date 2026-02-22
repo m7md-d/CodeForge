@@ -1,0 +1,2 @@
+# This file ensures the /data directory exists in the repository for Docker volume mounting.
+# The actual SQLite databases generated here are ignored via the root .gitignore.

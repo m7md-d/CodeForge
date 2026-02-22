@@ -1,0 +1,172 @@
+# Low-Level Curriculum Command Center - Zero-to-One Architecture
+
+This document answers the immediate directives to outline the architecture, schema, directory structure, and foundational bootstrapping code for the highly specialized technical learning platform.
+
+## 1. The Tech Stack
+
+- **Backend Framework**: **Python FastAPI**. It is lightning-fast, exceptionally efficient for local setups, and intrinsically supports deep data validation via Pydantic — crucial for heavily constrained, nested payload handling. 
+- **Database / Data Store**: **SQLite + SQLAlchemy + Alembic**. An embedded SQLite database (`app.db`) enables frictionless deployment requiring no external heavy servers. SQLAlchemy handles the deeply nested CRUD operations elegantly.
+- **Frontend Core**: **React via Vite** (TypeScript). Vite provides a highly performant local dev environment to build out the front end rapidly.
+- **Styling**: **Vanilla CSS / CSS Modules**. Strict adherence to a custom Cyberpunk design system (using CSS Variables) without heavy utility-class abstractions like Tailwind, ensuring ultimate granular control over the UI, dark surfaces, neon accents, and heavy terminal outputs.
+- **State Management & Fetching**: **React Query (TanStack Query)**. It automatically binds to React components, making UI updates frictionless without page reloads after interacting with the local backend CMS.
+
+## 2. The Data Schema
+
+The data model embraces a deeply nested structure, implemented precisely across Pydantic schemas and SQLAlchemy models:
+
+```mermaid
+erDiagram
+    SPRINT ||--o{ PROJECT : contains
+    SPRINT {
+        int id
+        string title
+        string description
+    }
+    PROJECT ||--o{ TASK : contains
+    PROJECT {
+        int id
+        int sprint_id
+        string title
+        string directory_name
+        text global_constraints
+        text forbidden_functions
+    }
+    TASK {
+        int id
+        int project_id
+        string title
+        string task_type
+        text technical_requirements
+        text raw_terminal_output
+        boolean is_completed
+    }
+```
+
+- **Sprint**: The macro container (e.g., "Low-Level Programming v2").
+- **Project**: Represents a specific repository/unit (e.g., "0x09. C - Strace"). Holds heavy global constraints.
+- **Task**: Granular assignments (e.g., "0. Syscall Name", "1. Syscall args"). Contains raw valgrind/ptrace output strings that demand perfect preservation.
+
+## 3. The Directory Structure
+
+The repository `/Users/dark_mac/Projects/Holberton_Clone/Holberton_clone` will be orchestrated as follows:
+
+```text
+Holberton_clone/
+├── backend/
+│   ├── main.py                # FastAPI Entry point & Routers
+│   ├── database.py            # SQLite engine & SessionLocal
+│   ├── models.py              # SQLAlchemy ORM definitions
+│   ├── schemas.py             # Pydantic validation for Deep CRUD I/O
+│   └── requirements.txt
+├── frontend/
+│   ├── index.html             # React mount point
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── src/
+│   │   ├── main.tsx           # React bootstrap + React Query Provider
+│   │   ├── App.tsx            # Macro Navigation (Dashboard/Sprints)
+│   │   ├── index.css          # Core Cyberpunk Theme (CSS Vars, font imports)
+│   │   └── components/        # Input forms, Terminal Renderers, Layouts
+└── data/                      
+    └── ccenter.db             # Local SQLite database file
+```
+
+## 4. The Entry Point Code (Bootstrapping Blueprint)
+
+### Proposed: `backend/main.py` (FastAPI Bootstrap)
+
+```python
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import models
+
+app = FastAPI(title="Command Center Local API")
+
+# Allow local frontend to seamlessly talk to local backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/api/ping")
+def health_check():
+    return {"status": "Command Center Active"}
+```
+
+### Proposed: `frontend/src/index.css` (Cyberpunk Theme Foundations)
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap');
+
+:root {
+  /* Deep dark surfaces */
+  --bg-dark: #09090b;
+  --bg-panel: #18181b;
+  --bg-input: #27272a;
+
+  /* Neon Accents */
+  --neon-green: #39ff14;
+  --neon-pink:  #ff00ff;
+  --text-main:  #e4e4e7;
+  --text-muted: #a1a1aa;
+
+  /* Typography */
+  --font-mono: 'Fira Code', monospace;
+  --font-sans: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+}
+
+/* Raw Data Display */
+.terminal-output {
+  background-color: var(--bg-panel);
+  color: var(--neon-green);
+  font-family: var(--font-mono);
+  padding: 1rem;
+  border-left: 4px solid var(--neon-green);
+  white-space: pre-wrap; /* Preserve spacing perfectly */
+  overflow-x: auto;
+}
+```
+
+## User Review Required
+
+> Please review this ZERO-TO-ONE architecture. Once approved, I will immediately execute the initialization commands across the frontend and backend, establishing the local environment so you can start inputting raw low-level curriculum data.
+
+## Phase 13 Architecture Overrides
+- **Backend**: `models.py` and `schemas.py` enhanced with `skill_weights` JSON mapped directly to the Sprint parent.
+- **Frontend Hierarchical Renderers**: `ProjectsArchive.tsx` and `GlobalChecker.tsx` must map `sprints.map(sprint => ... project.map(project => ...))`.
+- **True XP Mathematics**: Project/Sprint progress equals `(Earned XP / Total XP) * 100` mathematically decoupled from raw Boolean task checks.
+- **Profile Unification**: `/settings` endpoint demolished and merged into a massive `Profile.tsx` endpoint housing a dynamic Skill Tree Radar parsing absolute XP distributed dynamically via `Sprint.skill_weights`.
+## Phase 14 Architecture Overrides
+- **Micro-Execution UI**: `GlobalChecker.tsx` and `ProjectView.tsx` will mount a Task-specific Expansion/Modal mapping `allowed_syscalls` (Neon Badges), `technical_requirements` (Typography), `example_main_code` (Strict `#1e1e1e` Code Block), and `raw_terminal_output` (Black Terminal with neon green strings).
+- **Omni-Edit Engine**: Global CRUD capabilities utilizing FontAwesome Pencil/Trash. `skill_weights` (Sprints) and `skills_awarded` (Tasks) must be explicitly mapped in structured modal forms.
+- **Native DB Purge**: FastAPI `main.py` will expose `DELETE /api/system/purge` firing `Base.metadata.drop_all(bind=engine)` and recreating them natively to permit OS-level deletion directly from the React Profile component.
+## Phase 15 Architecture Overrides
+- **Get-or-Create Payload Resolver**: `main.py` must query `Sprint.title['en']` OR `title['ar']` equivalents during POST ingest. If found, route `.append(Project)` locally without instantiating new IDs.
+- **Abstract Logic Bindings**: Extract mathematical reductions (`Object.values(task.skills_awarded).reduce()`) to hide raw LLM JSON mappings from UI interfaces. Points must be pure integers.
+- [x] Task Termination Core: Wire completion mutation explicitly to an interactive DOM Node triggering real-time boolean flips, decoupling success state updates from random UI interactions.
+- [x] JSON Input Abstraction: Remap raw `<textarea>` inputs to mapping arrays (`select`, `number`) ensuring explicit JSON payload structure validation prior to POST/PUT calls onto Omni-Edit endpoints.
+
+## Phase 16 Architecture Overrides
+- **Zero-Stale State Enforcement**: `TaskExecutionModal` mutations must explicitly chain parent invalidations or trigger callback updates directly to `setSelectedTask` parameters to circumvent modal caching issues causing desynchronized DOM logic.
+- **Architectural XP Shift**: Moving from highly granular per-Task payload maps directly to generalized Project-Level weights. Total Project XP (sum of complete tasks) * `project.skill_tags` logic vastly simplifies Macro Injection configurations. Requires sweeping database `drop_all` / `create_all` cycles.
+- **Environment CMS System**: Extends the `/environment` static view into a fully dynamic mapping view querying a new `DevEnvironmentBlock` table locally, generating forms via standard glassmorphic inputs.
+## Verification Plan
+
+### Automated Tests
+- Run `curl http://localhost:8000/api/ping` to verify backend runs seamlessly.
+- Run `npm run dev` to verify the frontend boots up correctly and the global theme is applied.
+
+### Manual Verification
+- Visual inspection of the dashboard to confirm the Cyberpunk dark theme and terminal renders are exact.
+- Manual test of the CRUD loop: Submit a new sprint payload and confirm instant render without page refresh.

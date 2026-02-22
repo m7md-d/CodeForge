@@ -1,0 +1,72 @@
+# Macro JSON Ingestion Template
+
+To inject a completely structured sprint into the Command Center `macro-inject` engine, any secondary LLM must output a raw JSON payload strictly adhering to the following structure.
+
+This payload maps to the `MacroSprintCreate` Pydantic Schema.
+
+## Example Payload
+
+```json
+{
+  "title": {
+    "en": "Low-Level Programming v2",
+    "ar": "البرمجة منخفضة المستوى (الإصدار 2)"
+  },
+  "description": {
+    "en": "Focus on memory management, system calls, and extreme optimization in C.",
+    "ar": "التركيز على إدارة الذاكرة، نداءات النظام، والتحسين العميق في لغة C."
+  },
+  "projects": [
+    {
+      "title": {
+        "en": "0x0C. C - More malloc, free",
+        "ar": "0x0C. لغة C - المزيد عن الذاكرة"
+      },
+      "directory_name": "0x0c-more_malloc_free",
+      "global_constraints": ["No standard library", "Betty linter checks"],
+      "forbidden_functions": ["printf", "puts", "calloc"],
+      "compiler_flags": ["-Wall", "-Werror", "-Wextra", "-pedantic"],
+      "tasks": [
+        {
+          "title": {
+            "en": "0. Trust no one",
+            "ar": "0. لا تثق بأحد"
+          },
+          "task_type": "mandatory",
+          "allowed_syscalls": ["malloc", "free"],
+          "technical_requirements": {
+            "en": "Write a function that allocates memory using malloc. Prototype: void *malloc_checked(unsigned int b);",
+            "ar": "اكتب وظيفة تخصص الذاكرة باستخدام malloc. إذا فشلت، يجب إنهاء العملية بالحالة 98."
+          },
+          "example_main_code": "int main(void) { char *c = malloc_checked(1024); free(c); return (0); }",
+          "raw_terminal_output": "...",
+          "skills_awarded": {
+            "Memory Allocation": 50,
+            "C Programming": 100
+          }
+        },
+        {
+          "title": {
+            "en": "1. string_nconcat",
+            "ar": "1. دمج النصوص"
+          },
+          "task_type": "advanced",
+          "allowed_syscalls": ["malloc", "free"],
+          "technical_requirements": {
+            "en": "Write a function that concatenates two strings.",
+            "ar": "اكتب وظيفة تدمج نصين."
+          },
+          "example_main_code": "",
+          "raw_terminal_output": "",
+          "skills_awarded": {
+            "Pointer Arithmetic": 75
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+## How to use:
+Paste this generated JSON string directly into the JSON Injector via the Macro Payload terminal. The system parses the sequence and routes it atomically into `POST /api/sprints/macro-inject` which natively bootstraps the Sprint, inside of which are the Projects, inside of which are the Tasks within a single unified SQL transaction.
