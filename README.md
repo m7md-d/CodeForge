@@ -50,7 +50,7 @@ Execute the deployment via the following standard Open-Source workflow.
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/organization/codeforge.git
+git clone https://github.com/m7md-d/CodeForge.git
 cd codeforge
 ```
 
